@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261029_reprint">
+  <link rel="stylesheet" href="styles.css?v=20261029_100">
   <script src="assets/qrcode.min.js"></script>
 </head>
 <body>
@@ -209,26 +209,26 @@
 
             <div class="slider-control">
               <div class="slider-label-row">
-                <label>THRESHOLD TITIK HITAM</label>
-                <span id="thresholdValDisplay" class="slider-val">128</span>
+                <label>THRESHOLD TITIK HITAM (1 - 100)</label>
+                <span id="thresholdValDisplay" class="slider-val">50</span>
               </div>
-              <input type="range" id="ditherThreshold" min="30" max="220" value="128" class="kinetic-range">
+              <input type="range" id="ditherThreshold" min="1" max="100" value="50" class="kinetic-range">
             </div>
 
             <div class="slider-control">
               <div class="slider-label-row">
-                <label>KECERAHAN (BRIGHTNESS)</label>
-                <span id="brightnessValDisplay" class="slider-val">0</span>
+                <label>KECERAHAN / BRIGHTNESS (1 - 100)</label>
+                <span id="brightnessValDisplay" class="slider-val">50</span>
               </div>
-              <input type="range" id="brightnessInput" min="-100" max="100" value="0" class="kinetic-range">
+              <input type="range" id="brightnessInput" min="1" max="100" value="50" class="kinetic-range">
             </div>
 
             <div class="slider-control">
               <div class="slider-label-row">
-                <label>KONTRAS (CONTRAST)</label>
-                <span id="contrastValDisplay" class="slider-val">0</span>
+                <label>KONTRAS / CONTRAST (1 - 100)</label>
+                <span id="contrastValDisplay" class="slider-val">50</span>
               </div>
-              <input type="range" id="contrastInput" min="-100" max="100" value="0" class="kinetic-range">
+              <input type="range" id="contrastInput" min="1" max="100" value="50" class="kinetic-range">
             </div>
 
             <div class="checkbox-row">
@@ -544,26 +544,26 @@ Komaneka Receipt Memories • 80mm Thermal</textarea>
               <div class="setup-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
                 <div class="slider-control">
                   <div class="slider-label-row">
-                    <label>THRESHOLD</label>
-                    <span id="cfgNewFxThreshVal" class="slider-val">128</span>
+                    <label>THRESHOLD (1 - 100)</label>
+                    <span id="cfgNewFxThreshVal" class="slider-val">50</span>
                   </div>
-                  <input type="range" id="cfgNewFxThreshold" min="30" max="220" value="128" class="kinetic-range">
+                  <input type="range" id="cfgNewFxThreshold" min="1" max="100" value="50" class="kinetic-range">
                 </div>
 
                 <div class="slider-control">
                   <div class="slider-label-row">
-                    <label>BRIGHTNESS</label>
-                    <span id="cfgNewFxBrightVal" class="slider-val">0</span>
+                    <label>BRIGHTNESS (1 - 100)</label>
+                    <span id="cfgNewFxBrightVal" class="slider-val">50</span>
                   </div>
-                  <input type="range" id="cfgNewFxBrightness" min="-100" max="100" value="0" class="kinetic-range">
+                  <input type="range" id="cfgNewFxBrightness" min="1" max="100" value="50" class="kinetic-range">
                 </div>
 
                 <div class="slider-control">
                   <div class="slider-label-row">
-                    <label>CONTRAST</label>
-                    <span id="cfgNewFxContrastVal" class="slider-val">0</span>
+                    <label>CONTRAST (1 - 100)</label>
+                    <span id="cfgNewFxContrastVal" class="slider-val">50</span>
                   </div>
-                  <input type="range" id="cfgNewFxContrast" min="-100" max="100" value="0" class="kinetic-range">
+                  <input type="range" id="cfgNewFxContrast" min="1" max="100" value="50" class="kinetic-range">
                 </div>
               </div>
 
@@ -677,6 +677,6 @@ Komaneka Receipt Memories • 80mm Thermal</textarea>
     <img id="printImage" alt="Thermal Print Preview 80mm">
   </div>
 
-  <script src="app.js?v=20261029_reprint"></script>
+  <script src="app.js?v=20261029_100"></script>
 </body>
 </html>

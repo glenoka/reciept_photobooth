@@ -64,9 +64,9 @@ const BUILTIN_EFFECT_PRESETS = [
     id: "preset-classic",
     name: "Classic Thermal",
     mode: "floyd-steinberg",
-    threshold: 128,
-    brightness: 0,
-    contrast: 0,
+    threshold: 50,
+    brightness: 50,
+    contrast: 50,
     invert: false,
     desc: "Seimbang, alami, dan standar 80mm"
   },
@@ -74,9 +74,9 @@ const BUILTIN_EFFECT_PRESETS = [
     id: "preset-noir",
     name: "Noir / High Contrast",
     mode: "floyd-steinberg",
-    threshold: 135,
-    brightness: -10,
-    contrast: 35,
+    threshold: 53,
+    brightness: 46,
+    contrast: 68,
     invert: false,
     desc: "Hitam pekat tegas, bayangan tajam"
   },
@@ -84,9 +84,9 @@ const BUILTIN_EFFECT_PRESETS = [
     id: "preset-vintage",
     name: "Soft Vintage",
     mode: "floyd-steinberg",
-    threshold: 120,
-    brightness: 15,
-    contrast: -10,
+    threshold: 47,
+    brightness: 56,
+    contrast: 45,
     invert: false,
     desc: "Terang lembut, detail wajah halus"
   },
@@ -94,9 +94,9 @@ const BUILTIN_EFFECT_PRESETS = [
     id: "preset-retro-dot",
     name: "Retro Dot (Bayer)",
     mode: "ordered",
-    threshold: 128,
-    brightness: 5,
-    contrast: 15,
+    threshold: 50,
+    brightness: 52,
+    contrast: 58,
     invert: false,
     desc: "Titik-titik pola cetak koran jadul"
   },
@@ -104,9 +104,9 @@ const BUILTIN_EFFECT_PRESETS = [
     id: "preset-studio",
     name: "Studio Bright",
     mode: "floyd-steinberg",
-    threshold: 115,
-    brightness: 20,
-    contrast: 25,
+    threshold: 45,
+    brightness: 58,
+    contrast: 63,
     invert: false,
     desc: "Highlight bersih, kulit cerah bersinar"
   },
@@ -114,9 +114,9 @@ const BUILTIN_EFFECT_PRESETS = [
     id: "preset-dark-film",
     name: "Dark Film",
     mode: "floyd-steinberg",
-    threshold: 140,
-    brightness: -15,
-    contrast: 20,
+    threshold: 55,
+    brightness: 44,
+    contrast: 60,
     invert: false,
     desc: "Moody, artistik & dramatis"
   },
@@ -124,9 +124,9 @@ const BUILTIN_EFFECT_PRESETS = [
     id: "preset-negative",
     name: "Negative / Klise",
     mode: "floyd-steinberg",
-    threshold: 128,
-    brightness: 0,
-    contrast: 10,
+    threshold: 50,
+    brightness: 50,
+    contrast: 55,
     invert: true,
     desc: "Efek klise foto negatif film"
   }
@@ -153,9 +153,9 @@ const DEFAULT_PRINTER_SETTINGS = {
   feedLines: 3,
   autoCut: true,
   ditherMode: "floyd-steinberg",
-  threshold: 128,
-  brightness: 0,
-  contrast: 0,
+  threshold: 50,
+  brightness: 50,
+  contrast: 50,
   invert: false,
   copies: 1
 };
@@ -821,12 +821,33 @@ function drawImagePromise(ctx, src, x, y, w, h) {
   });
 }
 
+function normalizeSlider100(val, defaultVal = 50, isOldThreshold = false) {
+  if (val === undefined || val === null || isNaN(val)) return defaultVal;
+  const num = Number(val);
+  // Auto-migrate legacy 0..255 threshold or -100..100 values to 1..100
+  if (isOldThreshold && num > 100) {
+    return Math.max(1, Math.min(100, Math.round((num / 255) * 100)));
+  }
+  if (!isOldThreshold && (num < 0 || (num === 0 && defaultVal === 50))) {
+    return Math.max(1, Math.min(100, Math.round(50 + num / 2)));
+  }
+  return Math.max(1, Math.min(100, num));
+}
+
 function applyDitheringFilter(ctx, width, height) {
   const mode = state.printerSettings.ditherMode || "floyd-steinberg";
-  const threshold = state.printerSettings.threshold !== undefined ? state.printerSettings.threshold : 128;
-  const brightness = (state.printerSettings.brightness || 0) * 1.28;
-  const contrastFactor = ((state.printerSettings.contrast || 0) + 100) / 100;
+  const userThreshold = normalizeSlider100(state.printerSettings.threshold, 50, true);
+  const userBrightness = normalizeSlider100(state.printerSettings.brightness, 50, false);
+  const userContrast = normalizeSlider100(state.printerSettings.contrast, 50, false);
   const invert = state.printerSettings.invert || false;
+
+  // Map 1-100 range to internal pixel maths:
+  // 1..100 -> 0..255 threshold (50 maps to 127.5)
+  const threshold = (userThreshold / 100) * 255;
+  // 1..100 -> -128..+128 brightness (50 maps to 0 neutral)
+  const brightness = (userBrightness - 50) * 2.56;
+  // 1..100 -> 0.0..2.0 contrast factor (50 maps to 1.0 normal)
+  const contrastFactor = userContrast / 50;
 
   const imgData = ctx.getImageData(0, 0, width, height);
   const data = imgData.data;
@@ -982,18 +1003,26 @@ function syncDitherControls() {
   const contrastValDisplay = document.getElementById("contrastValDisplay");
   const invertCheckbox = document.getElementById("invertColorsCheckbox");
 
+  const thresh100 = normalizeSlider100(ps.threshold, 50, true);
+  const bright100 = normalizeSlider100(ps.brightness, 50, false);
+  const contrast100 = normalizeSlider100(ps.contrast, 50, false);
+
+  state.printerSettings.threshold = thresh100;
+  state.printerSettings.brightness = bright100;
+  state.printerSettings.contrast = contrast100;
+
   if (ditherModeSelect && ps.ditherMode) ditherModeSelect.value = ps.ditherMode;
-  if (ditherThreshold && ps.threshold !== undefined) {
-    ditherThreshold.value = ps.threshold;
-    if (thresholdValDisplay) thresholdValDisplay.textContent = ps.threshold;
+  if (ditherThreshold) {
+    ditherThreshold.value = thresh100;
+    if (thresholdValDisplay) thresholdValDisplay.textContent = thresh100;
   }
-  if (brightnessInput && ps.brightness !== undefined) {
-    brightnessInput.value = ps.brightness;
-    if (brightnessValDisplay) brightnessValDisplay.textContent = ps.brightness;
+  if (brightnessInput) {
+    brightnessInput.value = bright100;
+    if (brightnessValDisplay) brightnessValDisplay.textContent = bright100;
   }
-  if (contrastInput && ps.contrast !== undefined) {
-    contrastInput.value = ps.contrast;
-    if (contrastValDisplay) contrastValDisplay.textContent = ps.contrast;
+  if (contrastInput) {
+    contrastInput.value = contrast100;
+    if (contrastValDisplay) contrastValDisplay.textContent = contrast100;
   }
   if (invertCheckbox) invertCheckbox.checked = !!ps.invert;
 }
@@ -1079,11 +1108,11 @@ function saveNewCustomEffect() {
     id: `fx-${Date.now()}`,
     name: name,
     mode: modeEl ? modeEl.value : "floyd-steinberg",
-    threshold: threshEl ? parseInt(threshEl.value) : 128,
-    brightness: brightEl ? parseInt(brightEl.value) : 0,
-    contrast: contrastEl ? parseInt(contrastEl.value) : 0,
+    threshold: threshEl ? parseInt(threshEl.value) : 50,
+    brightness: brightEl ? parseInt(brightEl.value) : 50,
+    contrast: contrastEl ? parseInt(contrastEl.value) : 50,
     invert: invertEl ? invertEl.checked : false,
-    desc: `Kustom: B:${brightEl?.value} C:${contrastEl?.value} T:${threshEl?.value}`
+    desc: `Kustom (1-100): T:${threshEl?.value || 50} B:${brightEl?.value || 50} C:${contrastEl?.value || 50}`
   };
 
   if (!state.customEffects) state.customEffects = [];
