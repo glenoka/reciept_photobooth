@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261029_fix">
+  <link rel="stylesheet" href="styles.css?v=20261029_reprint">
   <script src="assets/qrcode.min.js"></script>
 </head>
 <body>
@@ -311,12 +311,17 @@
 
           <div class="thankyou-actions">
             <div class="reset-timer-box">
-              OTOMATIS KEMBALI KE BERANDA DALAM <span id="autoResetTimer">10</span> DETIK...
+              OTOMATIS KEMBALI KE BERANDA DALAM <span id="autoResetTimer">15</span> DETIK...
             </div>
-            <button class="kinetic-btn kinetic-btn-accent kinetic-btn-hero" id="btnResetToHome">
-              <span>MULAI SESI BARU SEKARANG</span>
-              <span class="btn-arrow">→</span>
-            </button>
+            <div class="thankyou-btns-row">
+              <button class="kinetic-btn kinetic-btn-secondary kinetic-btn-hero" id="btnReprintDiffEffect" type="button">
+                <span>🔄 GANTI EFEK &amp; CETAK ULANG</span>
+              </button>
+              <button class="kinetic-btn kinetic-btn-accent kinetic-btn-hero" id="btnResetToHome" type="button">
+                <span>MULAI SESI BARU SEKARANG</span>
+                <span class="btn-arrow">→</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -672,6 +677,6 @@ Komaneka Receipt Memories • 80mm Thermal</textarea>
     <img id="printImage" alt="Thermal Print Preview 80mm">
   </div>
 
-  <script src="app.js?v=20261029_fix"></script>
+  <script src="app.js?v=20261029_reprint"></script>
 </body>
 </html>

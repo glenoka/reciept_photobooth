@@ -1222,6 +1222,20 @@ h1, h2, h3, h4, h5, h6, p, label, .feat-title, .feat-desc, .card-desc, .sub-bloc
   font-weight: var(--dp-typography-display-weight);
 }
 
+.thankyou-btns-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+  .thankyou-btns-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
 /* ==========================================================================
    SCREEN 5: UNIFIED SETTINGS (INFORMASI STRIP & PRINTER IP)
    ========================================================================== */

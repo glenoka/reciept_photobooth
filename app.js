@@ -1583,7 +1583,7 @@ function showThankYouScreen() {
     void receiptEl.offsetWidth;
     receiptEl.classList.add("run");
   }
-  let seconds = 10;
+  let seconds = 20;
   if (timerDisplay) timerDisplay.textContent = seconds;
   clearInterval(state.autoResetInterval);
   state.autoResetInterval = setInterval(() => {
@@ -2131,8 +2131,22 @@ function initEventListeners() {
   if (btnFinish) btnFinish.onclick = showThankYouScreen;
 
   const btnResetHome = document.getElementById("btnResetToHome");
-  if (btnResetHome) btnResetHome.onclick = () => navigateTo("landing");
+  if (btnResetHome) {
+    btnResetHome.onclick = () => {
+      clearInterval(state.autoResetInterval);
+      state.capturedShots = [];
+      state.currentShotIndex = 0;
+      navigateTo("landing");
+    };
+  }
 
+  const btnReprint = document.getElementById("btnReprintDiffEffect");
+  if (btnReprint) {
+    btnReprint.onclick = () => {
+      clearInterval(state.autoResetInterval);
+      navigateTo("preview");
+    };
+  }
   // USB Serial Buttons
   const btnConnectSer = document.getElementById("btnConnectSerial");
   if (btnConnectSer) btnConnectSer.onclick = connectSerialPrinter;
