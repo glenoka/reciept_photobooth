@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOMANEKA RECEIPT MEMORIES // 80MM THERMAL PHOTOBOOTH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20261029_fix">
+  <script src="assets/qrcode.min.js"></script>
+</head>
+<body>
+  <!-- KINETIC POSTER HEADER -->
+  <header class="kinetic-header">
+    <div class="header-top-bar">
+      <div class="brand-kinetic" onclick="navigateTo('landing')">
+        <span class="brand-indicator">■</span>
+        <span class="brand-name">KOMANEKA RECEIPT MEMORIES</span>
+        <span class="brand-tag">80MM PHOTOBOOTH // SYSTEM</span>
+      </div>
+      <nav class="kinetic-nav" aria-label="Navigasi Utama">
+        <button class="nav-item active" data-target="landing">01 / BERANDA</button>
+        <button class="nav-item" data-target="settings">02 / SETTING</button>
+        <button class="nav-item" data-target="templates">03 / LAYOUTS</button>
+      </nav>
+    </div>
+
+    <!-- TIGHTLY STACKED POSTER DISPLAY -->
+    <div class="kinetic-hero-display">
+      <div class="hero-line hero-line-left">KOMANEKA RECEIPT MEMORIES</div>
+      <div class="hero-line hero-line-accent">80MM THERMAL RECEIPT SYSTEM</div>
+      <div class="hero-line hero-line-right">IP PRINTER &bull; USB &bull; WINDOWS DRIVER</div>
+    </div>
+
+    <!-- KINETIC MARQUEE TICKER -->
+    <div class="kinetic-marquee-wrap" aria-hidden="true">
+      <div class="marquee-content" id="marqueeTicker">
+        <span>KOMANEKA RECEIPT MEMORIES // 80MM THERMAL STRIP // DIRECT IP RAW 9100 // WINDOWS DRIVER // 1 FOTO, 2 FOTO &amp; 4 FOTO (2x2) // INSTANT PRINT //</span>
+        <span>KOMANEKA RECEIPT MEMORIES // 80MM THERMAL STRIP // DIRECT IP RAW 9100 // WINDOWS DRIVER // 1 FOTO, 2 FOTO &amp; 4 FOTO (2x2) // INSTANT PRINT //</span>
+      </div>
+      <button class="btn-marquee-toggle" id="btnToggleMarquee" title="Jeda / Putar Animasi" aria-label="Jeda Teks Berjalan">PAUSE ||</button>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT CONTAINER -->
+  <main class="kinetic-main">
+
+    <!-- =======================================================================
+         SCREEN 1: LANDING & SETUP
+         ======================================================================= -->
+    <section id="screen-landing" class="screen active">
+      <div class="kinetic-section-header">
+        <span class="section-index">01 / LAYOUT &amp; MULAI</span>
+        <h2 class="section-title">PILIH LAYOUT STRIP 80MM</h2>
+      </div>
+
+      <!-- Layout Selector Grid (1 Foto, 2 Foto, 4 Foto 2x2) -->
+      <div class="kinetic-grid-templates" id="landingTemplatesGrid">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+
+      <!-- Massive Action CTA -->
+      <div class="cta-banner">
+        <button class="kinetic-btn kinetic-btn-accent kinetic-btn-hero" id="btnStartPhotobooth">
+          <span>MULAI SESI FOTO</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+
+      <!-- Quick Feature Rules (Navigasi Langsung) -->
+      <div class="kinetic-feature-rows">
+        <div class="feature-row" onclick="navigateTo('settings')">
+          <span class="feat-idx">01</span>
+          <div class="feat-content">
+            <h3 class="feat-title">PENGATURAN TEKS STRIP &amp; PRINTER IP</h3>
+            <p class="feat-desc">Atur header, detail acara, footer, medsos, link QR softcopy, dan alamat IP printer thermal port 9100.</p>
+          </div>
+          <span class="feat-arrow">↗</span>
+        </div>
+        <div class="feature-row" onclick="navigateTo('templates')">
+          <span class="feat-idx">02</span>
+          <div class="feat-content">
+            <h3 class="feat-title">KUSTOMISASI KOORDINAT LAYOUT &amp; FRAME</h3>
+            <p class="feat-desc">Sesuaikan dimensi slot foto, bingkai PNG transparan, dan text overlay tambahan.</p>
+          </div>
+          <span class="feat-arrow">↗</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SCREEN 2: CAMERA CAPTURE
+         ======================================================================= -->
+    <section id="screen-capture" class="screen">
+      <div class="kinetic-section-header">
+        <span class="section-index">02 / CAPTURE</span>
+        <h2 class="section-title">AMBIL FOTO</h2>
+        <div class="header-status-chip" id="photoProgressChip">FOTO 1 / 2</div>
+      </div>
+
+      <div class="capture-workspace">
+        <!-- HTTPS Alert Notice for Mobile Devices -->
+        <div class="https-alert-box" id="httpsAlertBox" style="display:none;">
+          <span class="alert-icon">⚠️</span>
+          <div class="alert-text">
+            <strong>KAMERA DI HP MEMBUTUHKAN KONEKSI HTTPS:</strong>
+            Browser seluler (Chrome di Android &amp; Safari di iOS) memblokir kamera jika dibuka lewat HTTP biasa. Silakan jalankan <code>start_https.bat</code> di komputer lalu buka alamat <code>https://&lt;IP_KOMPUTER&gt;:8443</code> di HP Anda!
+          </div>
+        </div>
+
+        <!-- Sharp Rectangular Camera Viewport -->
+        <div class="camera-frame">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <canvas id="captureCanvas" style="display:none;"></canvas>
+
+          <!-- Oversized Countdown Numerals -->
+          <div class="countdown-overlay" id="countdownOverlay" style="display:none;">
+            <span class="countdown-num" id="countdownNumber">3</span>
+          </div>
+
+          <!-- Hard Shutter Flash -->
+          <div class="shutter-flash" id="shutterFlash"></div>
+
+          <!-- Viewport Corner Badges -->
+          <div class="corner-badge top-left">REC // 80MM LIVE</div>
+          <div class="corner-badge top-right" id="hudTimer">3S TIMER</div>
+        </div>
+
+        <!-- Camera Actions Bar -->
+        <div class="capture-controls-bar">
+          <div class="control-cluster">
+            <label class="control-label">KAMERA:</label>
+            <select id="cameraSelect" class="kinetic-select-inline"></select>
+          </div>
+
+          <div class="control-cluster">
+            <label class="control-label">TIMER:</label>
+            <div class="kinetic-btn-group">
+              <button class="kinetic-btn-sm timer-btn active" data-time="3">3S</button>
+              <button class="kinetic-btn-sm timer-btn" data-time="5">5S</button>
+              <button class="kinetic-btn-sm timer-btn" data-time="10">10S</button>
+            </div>
+          </div>
+
+          <div class="action-cluster">
+            <button class="kinetic-btn kinetic-btn-secondary" id="btnUploadInCapture" type="button">
+              <span id="btnUploadInCaptureText">＋ UPLOAD FOTO</span>
+              <span class="btn-arrow">↑</span>
+            </button>
+            <input type="file" id="globalPhotoUploadInput" accept="image/*" multiple style="display: none;">
+            <button class="kinetic-btn kinetic-btn-secondary" id="btnCancelCapture">
+              <span>BATAL</span>
+              <span class="btn-arrow">×</span>
+            </button>
+            <button class="kinetic-btn kinetic-btn-accent" id="btnTriggerCapture">
+              <span>AMBIL FOTO</span>
+              <span class="btn-arrow">↓</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Shot Thumbnails Row -->
+        <div class="shot-thumbnails-strip" id="shotThumbnails">
+          <!-- Filled as shots are taken -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SCREEN 3: PREVIEW, DITHERING & THERMAL PRINT (80MM ONLY)
+         ======================================================================= -->
+    <section id="screen-preview" class="screen">
+      <div class="kinetic-section-header">
+        <span class="section-index">03 / PILIH EFEK &amp; CETAK</span>
+        <h2 class="section-title">PILIH EFEK &amp; CETAK STRIP 80MM</h2>
+      </div>
+
+      <div class="preview-workspace">
+        <!-- Left Column: Realistic 80mm Thermal Strip -->
+        <div class="preview-receipt-col">
+          <div class="receipt-frame-kinetic">
+            <div class="receipt-cut-edge top-cut">--------------------------------</div>
+            <canvas id="receiptCanvas" width="576"></canvas>
+            <div class="receipt-cut-edge bottom-cut">--------------------------------</div>
+          </div>
+        </div>
+
+        <!-- Right Column: Kinetic Print & Dither Controls -->
+        <div class="preview-settings-col">
+
+          <!-- 1. DITHERING & EFEK THERMAL PANEL -->
+          <div class="kinetic-card">
+            <div class="card-headline">PILIH EFEK &amp; KUALITAS THERMAL 80MM</div>
+
+            <div class="preset-selector-block">
+              <label class="control-label" style="display:block; margin-bottom: 0.5rem;">PILIH TEMPLATE EFEK CEPAT:</label>
+              <div class="preset-chips-scroll" id="previewPresetChips"></div>
+            </div>
+            <div class="control-row">
+              <label>ALGORITMA EFEK / DITHER:</label>
+              <select id="ditherModeSelect" class="kinetic-select">
+                <option value="floyd-steinberg">Floyd-Steinberg (Thermal High-Quality)</option>
+                <option value="ordered">Ordered Bayer Matrix (Retro Dot)</option>
+                <option value="threshold">Binary High Contrast</option>
+                <option value="grayscale">Grayscale Preview</option>
+              </select>
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-label-row">
+                <label>THRESHOLD TITIK HITAM</label>
+                <span id="thresholdValDisplay" class="slider-val">128</span>
+              </div>
+              <input type="range" id="ditherThreshold" min="30" max="220" value="128" class="kinetic-range">
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-label-row">
+                <label>KECERAHAN (BRIGHTNESS)</label>
+                <span id="brightnessValDisplay" class="slider-val">0</span>
+              </div>
+              <input type="range" id="brightnessInput" min="-100" max="100" value="0" class="kinetic-range">
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-label-row">
+                <label>KONTRAS (CONTRAST)</label>
+                <span id="contrastValDisplay" class="slider-val">0</span>
+              </div>
+              <input type="range" id="contrastInput" min="-100" max="100" value="0" class="kinetic-range">
+            </div>
+
+            <div class="checkbox-row">
+              <label class="kinetic-checkbox">
+                <input type="checkbox" id="invertColorsCheckbox">
+                <span class="checkbox-box"></span>
+                <span>INVERT WARNA (MODE NEGATIF / KLISE)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 2. PRINTER DISPATCH PANEL (AUTO DARI PENGATURAN) -->
+          <div class="kinetic-card print-dispatch-card">
+            <div class="card-headline">PENCETAKAN STRIP THERMAL 80MM</div>
+
+            <div class="active-printer-box">
+              <div class="printer-badge-row">
+                <span class="printer-method-tag" id="previewPrinterTag">WINDOWS DRIVER</span>
+                <span class="printer-target-name" id="previewPrinterTarget">EPSON TM-T82II Receipt</span>
+              </div>
+              <p class="printer-target-sub" id="previewPrinterSub">Pencetakan otomatis menggunakan printer yang aktif di menu Setting.</p>
+              <div class="ip-status-note" id="previewPrinterStatus">Siap mencetak strip 80mm</div>
+            </div>
+
+            <button class="kinetic-btn kinetic-btn-accent kinetic-btn-block" id="btnPrintReceipt">
+              <span id="btnPrintReceiptText">CETAK STRIP THERMAL</span>
+              <span class="btn-arrow">→</span>
+            </button>
+
+            <!-- Alternative Exports -->
+            <div class="export-actions-row">
+              <button class="kinetic-btn kinetic-btn-secondary" id="btnDownloadReceipt">
+                <span>SIMPAN PNG</span>
+                <span class="btn-arrow">↓</span>
+              </button>
+              <button class="kinetic-btn kinetic-btn-secondary" id="btnDownloadEscPos">
+                <span>EXPORT ESC/POS (.BIN)</span>
+                <span class="btn-arrow">↓</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. SESSION NAVIGATION -->
+          <div class="session-nav-row">
+            <button class="kinetic-btn kinetic-btn-secondary" id="btnRetakeAll">
+              <span>FOTO ULANG</span>
+              <span class="btn-arrow">↺</span>
+            </button>
+            <button class="kinetic-btn kinetic-btn-accent" id="btnFinishSession">
+              <span>LEWATI CETAK (QR SOFTCOPY)</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SCREEN 4: SELESAI & ANIMASI PRINTER THERMAL
+         ======================================================================= -->
+    <section id="screen-thankyou" class="screen">
+      <div class="thankyou-kinetic">
+        <div class="thankyou-poster">
+          <div class="poster-tag">04 // COMPLETE &bull; PRINTING</div>
+          <h2 class="print-success-title" id="thankyouMainTitle">FOTO BERHASIL DICETAK!</h2>
+          <p class="print-success-sub" id="thankyouPrintStatus">Silakan ambil struk foto fisik kamu di printer thermal.</p>
+
+          <!-- THERMAL PRINTER ANIMATION STAGE (DARI receipt_photobooth_demo.html) -->
+          <div class="printer-stage" aria-label="Animasi Printer Struk Keluar">
+            <div class="printer-mouth" aria-hidden="true">
+              <div class="printer-led-light"></div>
+            </div>
+            <div class="receipt-window">
+              <div class="receipt-animated" id="animatedReceipt">
+                <img id="thankyouStripImg" alt="Thermal Strip Preview" class="receipt-ejected-strip">
+                <div class="receipt-zigzag" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="thankyou-actions">
+            <div class="reset-timer-box">
+              OTOMATIS KEMBALI KE BERANDA DALAM <span id="autoResetTimer">10</span> DETIK...
+            </div>
+            <button class="kinetic-btn kinetic-btn-accent kinetic-btn-hero" id="btnResetToHome">
+              <span>MULAI SESI BARU SEKARANG</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SCREEN 5: UNIFIED SETTINGS (INFORMASI STRIP RECEIPT + PRINTER IP & USB)
+         ======================================================================= -->
+    <section id="screen-settings" class="screen">
+      <div class="kinetic-section-header">
+        <span class="section-index">02 / SETTING</span>
+        <h2 class="section-title">PENGATURAN STRIP &amp; PRINTER IP</h2>
+      </div>
+
+      <div class="unified-settings-grid">
+        <!-- CARD A: INFORMASI STRIP RECEIPT (HEADER & FOOTER) -->
+        <div class="kinetic-card">
+          <div class="card-headline">INFORMASI STRIP RECEIPT (HEADER &amp; FOOTER)</div>
+          <p class="card-desc">Atur teks yang tercetak di bagian atas (header) dan bagian bawah (footer) strip struk thermal 80mm.</p>
+
+          <div class="form-field">
+            <label>HEADER / NAMA TOKO / EVENT:</label>
+            <input type="text" id="cfgHeader" class="kinetic-input" value="KOMANEKA RECEIPT MEMORIES">
+          </div>
+
+          <div class="form-field">
+            <label>SUBHEADER / TAGLINE:</label>
+            <input type="text" id="cfgSubheader" class="kinetic-input" value="Thermal Photo Memories • 80mm Strip">
+          </div>
+
+          <div class="form-field">
+            <label>KETERANGAN ACARA (EVENT DETAILS):</label>
+            <input type="text" id="cfgEventDetails" class="kinetic-input" value="Wedding Celebration • Makassar">
+          </div>
+
+          <div class="setup-form-grid">
+            <div class="form-field">
+              <label>FORMAT TANGGAL / JAM:</label>
+              <select id="cfgDateFormat" class="kinetic-select">
+                <option value="datetime">YYYY-MM-DD HH:mm:ss</option>
+                <option value="date-only">DD MMMM YYYY</option>
+                <option value="none">Sembunyikan Tanggal</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>PREFIX NOMOR ORDER:</label>
+              <input type="text" id="cfgOrderPrefix" class="kinetic-input" value="ORDER #">
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>PESAN PENUTUP (FOOTER MESSAGE):</label>
+            <textarea id="cfgFooter" class="kinetic-input" rows="2" style="resize:vertical;">THANK YOU ~ HAVE A NICE DAY!
+Komaneka Receipt Memories • 80mm Thermal</textarea>
+          </div>
+
+          <div class="form-field">
+            <label>AKUN SOSIAL MEDIA / WEBSITE:</label>
+            <input type="text" id="cfgSocial" class="kinetic-input" value="Instagram: @komanekareceipt • TikTok: @komanekareceipt">
+          </div>
+
+          <div class="form-field">
+            <label>LINK DOWNLOAD SOFTCOPY (QR CODE):</label>
+            <input type="text" id="cfgQrUrl" class="kinetic-input" value="https://receipt.vizrize.com/gallery">
+          </div>
+
+          <div class="checkbox-row">
+            <label class="kinetic-checkbox">
+              <input type="checkbox" id="cfgShowQr" checked>
+              <span class="checkbox-box"></span>
+              <span>TAMPILKAN QR CODE SOFTCOPY DI FOOTER</span>
+            </label>
+          </div>
+
+          <!-- Live Preview Teks -->
+          <div class="text-preview-subcard">
+            <label class="control-label">PRATINJAU TEKS RECEIPT 80MM:</label>
+            <div class="receipt-text-preview" id="receiptTextPreviewBox"></div>
+          </div>
+        </div>
+
+        <!-- CARD B: PENGATURAN PRINTER (WINDOWS DRIVER / IP 80MM) -->
+        <div class="kinetic-card">
+          <div class="card-headline">PENGATURAN PRINTER (WINDOWS DRIVER / IP 80MM)</div>
+          <p class="card-desc">Pilih salah satu metode koneksi: Windows Driver USB atau Printer IP (Network LAN / WiFi Port 9100).</p>
+
+          <!-- Status Kertas -->
+          <div class="paper-badge-strip">
+            <span class="badge-label">STANDAR KERTAS AKTIF:</span>
+            <span class="badge-val">ROLL THERMAL 80MM (LEBAR CETAK 576 DOTS / 72MM)</span>
+          </div>
+
+          <!-- Pilihan Koneksi (Mutually Exclusive: Dipilih Salah Satu) -->
+          <div class="form-field" style="margin-bottom: 1.25rem;">
+            <label>KONEKSI PRINTER (PILIH SALAH SATU):</label>
+            <select id="cfgPrinterConnection" class="kinetic-select">
+              <option value="driver">Windows Driver / USB Thermal (Rekomendasi)</option>
+              <option value="network">Printer IP Thermal (Network LAN / WiFi Port 9100)</option>
+            </select>
+          </div>
+
+          <!-- Section 1: Windows Driver & Auto Scan Printer Aktif -->
+          <div id="cfgWindowsDriverBlock" class="sub-config-block">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+              <h4 class="sub-block-heading" style="margin: 0;">WINDOWS DRIVER / USB THERMAL</h4>
+              <button type="button" class="kinetic-btn kinetic-btn-secondary" id="btnScanPrinters" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                <span>🔄 SCAN PRINTER</span>
+              </button>
+            </div>
+            <p class="sub-block-desc">Deteksi otomatis printer thermal yang aktif di Windows. Printer thermal yang siap digunakan akan diprioritaskan.</p>
+
+            <div class="setup-form-grid" style="grid-template-columns: 1fr;">
+              <div class="form-field">
+                <label>PILIH PRINTER WINDOWS TERPASANG:</label>
+                <select id="cfgPrinterSelect" class="kinetic-select">
+                  <option value="">-- Memuat printer dari Windows... --</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>NAMA DRIVER PRINTER (TERPILIH):</label>
+                <input type="text" id="cfgPrinterName" class="kinetic-input" placeholder="mis. EPSON TM-T82II Receipt">
+              </div>
+            </div>
+
+            <div id="cfgWinPrinterHint" class="ip-feedback-box" style="margin-top: 0.75rem; display: none;"></div>
+            <div class="ip-feedback-box" id="cfgDriverStatus">Status: Menunggu pemindaian printer Windows</div>
+
+            <button type="button" class="kinetic-btn kinetic-btn-accent kinetic-btn-block" id="btnTestDriverPrint">
+              <span>TES CETAK KE PRINTER WINDOWS</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+
+          <!-- Section 2: Printer IP Thermal (Port 9100) -->
+          <div id="cfgNetworkBlock" class="sub-config-block" style="display: none;">
+            <h4 class="sub-block-heading">PRINTER IP (NETWORK LAN / WIFI)</h4>
+            <p class="sub-block-desc">Kirim stream biner ESC/POS langsung ke socket raw IP printer thermal di jaringan lokal tanpa driver.</p>
+
+            <div class="setup-form-grid">
+              <div class="form-field">
+                <label>IP ADDRESS PRINTER:</label>
+                <input type="text" id="cfgPrinterIp" class="kinetic-input" value="192.168.71.10">
+              </div>
+              <div class="form-field">
+                <label>PORT RAW SOCKET:</label>
+                <input type="number" id="cfgPrinterPort" class="kinetic-input" value="9100">
+              </div>
+            </div>
+
+            <div class="ip-feedback-box" id="cfgIpStatus">Status: Siap mengirim perintah cetak IP</div>
+
+            <button type="button" class="kinetic-btn kinetic-btn-accent kinetic-btn-block" id="btnTestIpPrint">
+              <span>TES CETAK KE PRINTER IP (PORT 9100)</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+          <!-- Section 3: Pengaturan Kertas & Pemotong -->
+          <div class="sub-config-block">
+            <h4 class="sub-block-heading">3. FEED LINES &amp; CUTTER</h4>
+            <div class="setup-form-grid">
+              <div class="form-field">
+                <label>EXTRA FEED LINES:</label>
+                <input type="number" id="cfgFeedLines" class="kinetic-input" value="3" min="1" max="10">
+              </div>
+              <div class="form-field">
+                <label>AUTO-CUT KERTAS:</label>
+                <select id="cfgAutoCut" class="kinetic-select">
+                  <option value="true">Aktif (Kirim Perintah Cut GS V 65 0)</option>
+                  <option value="false">Nonaktif (Sobek Manual)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Optional USB Serial (COM Port) -->
+            <div class="serial-status-text" id="serialStatus">USB Serial COM: Belum Terhubung</div>
+            <div class="btn-row-flex">
+              <button class="kinetic-btn kinetic-btn-secondary" id="btnConnectSerial">
+                <span>CONNECT USB SERIAL</span>
+                <span class="btn-arrow">↗</span>
+              </button>
+              <button class="kinetic-btn kinetic-btn-secondary" id="btnTestSerialPrint" disabled>
+                <span>TES CETAK SERIAL</span>
+                <span class="btn-arrow">→</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tombol Simpan Pengaturan -->
+          <div class="save-settings-bar">
+            <button class="kinetic-btn kinetic-btn-accent kinetic-btn-hero" id="btnSaveAllSettings">
+              <span>SIMPAN SEMUA PENGATURAN</span>
+              <span class="btn-arrow">✓</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- CARD C: TEMPLATE EFEK KUSTOM (CUSTOM EFFECT PRESETS) -->
+        <div class="kinetic-card" style="grid-column: 1 / -1;">
+          <div class="card-headline">TEMPLATE EFEK KUSTOM (PRESET CONTRAST &amp; BRIGHTNESS)</div>
+          <p class="card-desc">Simpan racikan efek dithering, kontras, dan kecerahan Anda sendiri sebagai template efek siap pakai di server.</p>
+
+          <div class="custom-fx-builder-grid">
+            <div class="fx-builder-form">
+              <div class="form-field">
+                <label>NAMA TEMPLATE EFEK:</label>
+                <input type="text" id="cfgNewFxName" class="kinetic-input" placeholder="mis. Vintage Wedding / Komaneka Signature">
+              </div>
+
+              <div class="form-field">
+                <label>ALGORITMA DITHER:</label>
+                <select id="cfgNewFxMode" class="kinetic-select">
+                  <option value="floyd-steinberg">Floyd-Steinberg (High Quality)</option>
+                  <option value="ordered">Ordered Bayer Matrix (Retro Dot)</option>
+                  <option value="threshold">Binary High Contrast</option>
+                  <option value="grayscale">Grayscale Preview</option>
+                </select>
+              </div>
+
+              <div class="setup-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                <div class="slider-control">
+                  <div class="slider-label-row">
+                    <label>THRESHOLD</label>
+                    <span id="cfgNewFxThreshVal" class="slider-val">128</span>
+                  </div>
+                  <input type="range" id="cfgNewFxThreshold" min="30" max="220" value="128" class="kinetic-range">
+                </div>
+
+                <div class="slider-control">
+                  <div class="slider-label-row">
+                    <label>BRIGHTNESS</label>
+                    <span id="cfgNewFxBrightVal" class="slider-val">0</span>
+                  </div>
+                  <input type="range" id="cfgNewFxBrightness" min="-100" max="100" value="0" class="kinetic-range">
+                </div>
+
+                <div class="slider-control">
+                  <div class="slider-label-row">
+                    <label>CONTRAST</label>
+                    <span id="cfgNewFxContrastVal" class="slider-val">0</span>
+                  </div>
+                  <input type="range" id="cfgNewFxContrast" min="-100" max="100" value="0" class="kinetic-range">
+                </div>
+              </div>
+
+              <div class="checkbox-row">
+                <label class="kinetic-checkbox">
+                  <input type="checkbox" id="cfgNewFxInvert">
+                  <span class="checkbox-box"></span>
+                  <span>INVERT WARNA (NEGATIF / KLISE)</span>
+                </label>
+              </div>
+
+              <button type="button" class="kinetic-btn kinetic-btn-accent" id="btnSaveCustomFx">
+                <span>＋ SIMPAN TEMPLATE EFEK KE SERVER</span>
+                <span class="btn-arrow">✓</span>
+              </button>
+            </div>
+
+            <div class="fx-saved-list-wrap">
+              <label class="control-label" style="display:block; margin-bottom: 0.75rem;">DAFTAR EFEK KUSTOM TERSIMPAN:</label>
+              <div id="savedCustomFxList" class="saved-fx-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SCREEN 6: LAYOUTS & FRAME BUILDER (80MM ONLY)
+         ======================================================================= -->
+    <section id="screen-templates" class="screen">
+      <div class="kinetic-section-header">
+        <span class="section-index">03 / LAYOUTS</span>
+        <h2 class="section-title">EDITOR TEMPLATE &amp; FRAME 80MM</h2>
+      </div>
+
+      <div class="templates-workspace-kinetic">
+        <!-- Sidebar Templates List -->
+        <div class="kinetic-card tpl-sidebar">
+          <div class="card-headline">DAFTAR TEMPLATE 80MM</div>
+          <div class="tpl-list" id="templateListItems"></div>
+          <div class="sidebar-actions">
+            <button class="kinetic-btn kinetic-btn-accent kinetic-btn-block" id="btnCreateNewTemplate">
+              <span>+ BUAT TEMPLATE BARU</span>
+            </button>
+            <button class="kinetic-btn kinetic-btn-secondary kinetic-btn-block" id="btnResetDefaultTemplates">
+              <span>RESET KE DEFAULT</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Template Editor Canvas & Properties -->
+        <div class="kinetic-card tpl-editor-panel">
+          <div class="editor-header-inputs">
+            <div class="form-field flex-2">
+              <label>NAMA TEMPLATE:</label>
+              <input type="text" id="tplNameInput" class="kinetic-input" value="Classic 80mm">
+            </div>
+            <div class="form-field flex-1">
+              <label>KERTAS:</label>
+              <input type="text" class="kinetic-input" value="80mm Thermal (576px)" disabled>
+            </div>
+            <button class="kinetic-btn kinetic-btn-accent" id="btnSaveTemplate">
+              <span>SIMPAN TEMPLATE</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+
+          <div class="editor-body-split">
+            <!-- Visual Layout Canvas (576px) -->
+            <div class="canvas-mount">
+              <canvas id="templatePreviewCanvas" width="576" height="880"></canvas>
+            </div>
+
+            <!-- Slots and Overlay Configurations -->
+            <div class="config-mount">
+              <div class="config-sub-block">
+                <div class="sub-block-title">
+                  <span>SLOT FOTO (<span id="slotCountDisplay">2</span> SLOT)</span>
+                  <button class="kinetic-btn-sm kinetic-btn-accent" id="btnAddPhotoSlot">+ TAMBAH SLOT</button>
+                </div>
+                <div class="slots-editor-list" id="slotsConfigContainer"></div>
+              </div>
+
+              <div class="config-sub-block">
+                <div class="sub-block-title">
+                  <span>FRAME OVERLAY (PNG TRANSPARAN)</span>
+                </div>
+                <div class="frame-upload-row">
+                  <input type="file" id="frameUploadInput" accept="image/png" class="kinetic-file-input">
+                  <button class="kinetic-btn-sm kinetic-btn-secondary" id="btnClearFrame">HAPUS FRAME</button>
+                </div>
+              </div>
+
+              <div class="config-sub-block">
+                <div class="sub-block-title">
+                  <span>OVERLAY TEKS</span>
+                  <button class="kinetic-btn-sm kinetic-btn-accent" id="btnAddTextOverlay">+ TAMBAH TEKS</button>
+                </div>
+                <div class="text-overlays-list" id="textOverlaysContainer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- DEDICATED THERMAL PRINT AREA (@media print: 80mm ONLY) -->
+  <div id="print-area">
+    <img id="printImage" alt="Thermal Print Preview 80mm">
+  </div>
+
+  <script src="app.js?v=20261029_fix"></script>
+</body>
+</html>

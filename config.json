@@ -1,0 +1,22 @@
+{
+  "print": {
+    "connection": "network",
+    "name": "EPSON TM-T82II Receipt",
+    "ip": "192.168.71.11",
+    "port": 9100,
+    "feedLines": 3,
+    "autoCut": true,
+    "paperWidthMm": 80
+  },
+  "custom_effects": [
+    {
+      "id": "fx-test-123",
+      "name": "Wedding Gold Preset",
+      "mode": "floyd-steinberg",
+      "threshold": 120,
+      "brightness": 10,
+      "contrast": 25,
+      "invert": false
+    }
+  ]
+}

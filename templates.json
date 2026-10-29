@@ -1,0 +1,84 @@
+[
+  {
+    "id": "tpl-1photo",
+    "name": "1 Foto (Single Large)",
+    "paperSize": "80mm",
+    "width": 576,
+    "height": 860,
+    "slots": [
+      {
+        "x": 38,
+        "y": 160,
+        "width": 500,
+        "height": 480,
+        "radius": 0
+      }
+    ],
+    "textOverlays": [],
+    "frameImage": null
+  },
+  {
+    "id": "tpl-2photo",
+    "name": "2 Foto (2-Strip Vertikal)",
+    "paperSize": "80mm",
+    "width": 576,
+    "height": 1120,
+    "slots": [
+      {
+        "x": 38,
+        "y": 160,
+        "width": 500,
+        "height": 360,
+        "radius": 0
+      },
+      {
+        "x": 38,
+        "y": 540,
+        "width": 500,
+        "height": 360,
+        "radius": 0
+      }
+    ],
+    "textOverlays": [],
+    "frameImage": null
+  },
+  {
+    "id": "tpl-4grid",
+    "name": "4 Foto (Grid 2 Baris \u00d7 2 Kolom)",
+    "paperSize": "80mm",
+    "width": 576,
+    "height": 1020,
+    "slots": [
+      {
+        "x": 38,
+        "y": 160,
+        "width": 242,
+        "height": 242,
+        "radius": 0
+      },
+      {
+        "x": 296,
+        "y": 160,
+        "width": 242,
+        "height": 242,
+        "radius": 0
+      },
+      {
+        "x": 38,
+        "y": 420,
+        "width": 242,
+        "height": 242,
+        "radius": 0
+      },
+      {
+        "x": 296,
+        "y": 420,
+        "width": 242,
+        "height": 242,
+        "radius": 0
+      }
+    ],
+    "textOverlays": [],
+    "frameImage": null
+  }
+]

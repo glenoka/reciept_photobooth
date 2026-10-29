@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photobooth Receipt Animation</title>
+<style>
+  :root { --paper-width: 250px; --paper-height: 390px; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    background: #111; color: #f5f5f5; font-family: Arial, sans-serif;
+    padding: 24px;
+  }
+  .app { width: min(100%, 620px); text-align: center; }
+  h1 { font-size: clamp(20px, 4vw, 28px); margin: 0 0 8px; letter-spacing: .02em; }
+  .sub { color: #aaa; margin: 0 0 22px; font-size: 14px; }
+  .stage {
+    position: relative; height: 500px; display: flex; justify-content: center;
+    overflow: hidden; border: 1px solid #303030; border-radius: 18px;
+    background: radial-gradient(ellipse at top, #292929, #101010 70%);
+  }
+  .printer {
+    position: absolute; top: 24px; width: 286px; height: 45px; z-index: 3;
+    background: linear-gradient(#bcbcbc, #777 45%, #a4a4a4 70%, #555);
+    border: 2px solid #4a4a4a; border-radius: 7px 7px 4px 4px;
+    box-shadow: 0 8px 16px #0008;
+  }
+  .printer::before {
+    content: ""; position: absolute; left: 10px; right: 10px; top: 8px;
+    height: 8px; background: #292929; border: 2px solid #555; border-radius: 2px;
+  }
+  .printer::after {
+    content: ""; position: absolute; left: 22px; right: 22px; bottom: 7px;
+    height: 3px; background: #d7d7d7; opacity: .7;
+  }
+  .receipt-window {
+    position: absolute; top: 61px; width: var(--paper-width); height: 405px;
+    overflow: hidden; z-index: 2;
+  }
+  .receipt {
+    position: absolute; top: calc(-1 * var(--paper-height)); left: 0;
+    width: var(--paper-width); min-height: var(--paper-height);
+    padding: 17px 16px 24px; color: #222; background: #fff;
+    box-shadow: 0 8px 18px #0005;
+    transform-origin: top center;
+  }
+  .receipt.run { animation: print-out 2.1s cubic-bezier(.2,.72,.25,1) forwards; }
+  .receipt.reprint { animation: none; top: calc(-1 * var(--paper-height)); }
+  @keyframes print-out {
+    0% { top: calc(-1 * var(--paper-height)); }
+    100% { top: 0; }
+  }
+  .receipt-brand { font-size: 10px; text-align: center; letter-spacing: .22em; margin-bottom: 11px; font-weight: 700; }
+  .receipt-title { font-family: Georgia, serif; text-align: center; font-size: 17px; margin-bottom: 10px; }
+  .rule { border-top: 1px dashed #aaa; margin: 9px 0; }
+  .photo-frame {
+    width: 100%; height: 235px; display: grid; place-items: center;
+    background: #f0f0f0; overflow: hidden; border: 1px solid #ddd;
+  }
+  .photo-frame img {
+    display: block; width: 100%; height: 100%; object-fit: contain;
+    background: #f0f0f0;
+  }
+  .placeholder { color: #888; font-size: 12px; padding: 12px; }
+  .receipt-foot { text-align: center; font-size: 9px; letter-spacing: .12em; margin-top: 10px; }
+  .zigzag {
+    position: absolute; left: 0; right: 0; bottom: -1px; height: 10px;
+    background: linear-gradient(135deg, transparent 7px, #fff 0) 0 0 / 16px 16px,
+                linear-gradient(225deg, transparent 7px, #fff 0) 0 0 / 16px 16px;
+  }
+  .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
+  .upload {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 16px; background: #f4f4f4; color: #111; border-radius: 999px;
+    font-weight: 700; font-size: 14px; cursor: pointer; border: 0;
+  }
+  button {
+    padding: 12px 16px; background: #282828; color: #fff; border: 1px solid #555;
+    border-radius: 999px; font-size: 14px; cursor: pointer;
+  }
+  button:hover, .upload:hover { filter: brightness(.9); }
+  input[type=file] { display: none; }
+  .hint { color: #888; font-size: 12px; line-height: 1.5; margin-top: 13px; }
+  @media (max-width: 400px) {
+    .stage { height: 475px; }
+    .receipt-window { transform: scale(.9); transform-origin: top center; }
+    .printer { transform: scale(.9); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .receipt.run { animation-duration: .01ms; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <h1>Receipt Photobooth</h1>
+  <p class="sub">Upload foto apa pun — lalu lihat struknya keluar.</p>
+  <section class="stage" aria-label="Preview animasi printer struk">
+    <div class="printer" aria-hidden="true"></div>
+    <div class="receipt-window">
+      <article class="receipt" id="receipt">
+        <div class="receipt-brand">MONOCHROME MEMORIES</div>
+        <div class="receipt-title">Your Photo Print</div>
+        <div class="rule"></div>
+        <div class="photo-frame" id="photoFrame">
+          <div class="placeholder" id="placeholder">Foto yang di-upload akan muncul di sini</div>
+          <img id="photo" alt="Foto yang di-upload" hidden>
+        </div>
+        <div class="rule"></div>
+        <div class="receipt-foot">THANK YOU • KEEP THIS MEMORY</div>
+        <div class="zigzag" aria-hidden="true"></div>
+      </article>
+    </div>
+  </section>
+  <div class="controls">
+    <label class="upload" for="fileInput">＋ Upload Foto</label>
+    <input id="fileInput" type="file" accept="image/*">
+    <button id="replayBtn" type="button">↻ Putar Ulang</button>
+  </div>
+  <p class="hint">Berjalan langsung di browser. Foto tidak dikirim ke server.<br>Untuk tampilan transparan, hapus background pada CSS <code>body</code> dan <code>.stage</code>.</p>
+</main>
+<script>
+  const fileInput = document.getElementById('fileInput');
+  const photo = document.getElementById('photo');
+  const placeholder = document.getElementById('placeholder');
+  const receipt = document.getElementById('receipt');
+  let currentObjectUrl = null;
+
+  function replay() {
+    receipt.classList.remove('run');
+    receipt.classList.add('reprint');
+    // Trigger reflow so the animation restarts reliably.
+    void receipt.offsetWidth;
+    receipt.classList.remove('reprint');
+    receipt.classList.add('run');
+  }
+
+  fileInput.addEventListener('change', (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Silakan pilih file gambar, seperti JPG, PNG, atau WebP.');
+      fileInput.value = '';
+      return;
+    }
+    if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+    currentObjectUrl = URL.createObjectURL(file);
+    photo.onload = () => {
+      photo.hidden = false;
+      placeholder.hidden = true;
+      replay();
+    };
+    photo.onerror = () => {
+      alert('Gambar tidak dapat dibuka. Coba file gambar lain.');
+    };
+    photo.src = currentObjectUrl;
+  });
+
+  document.getElementById('replayBtn').addEventListener('click', replay);
+</script>
+</body>
+</html>
